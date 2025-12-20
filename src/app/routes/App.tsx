@@ -1,8 +1,11 @@
+import AppProvider from "./provider";
+import AppRouter from "./router";
+
 const App = () => {
   return (
-    <div>
-      <div></div>
-    </div>
+    <AppProvider>
+      <AppRouter />
+    </AppProvider>
   );
 };
 
