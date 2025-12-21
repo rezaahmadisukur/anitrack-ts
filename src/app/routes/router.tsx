@@ -1,4 +1,4 @@
-import { HomePage } from "@/pages";
+import { HomePage, Anime } from "@/pages";
 import { useRoutes } from "react-router-dom";
 
 const AppRouter = () => {
@@ -6,6 +6,10 @@ const AppRouter = () => {
     {
       path: "/",
       element: <HomePage />
+    },
+    {
+      path: "/anime",
+      element: <Anime />
     }
   ]);
   return element;
