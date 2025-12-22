@@ -10,7 +10,7 @@ type TGenre = {
   count: number;
 };
 
-const Anime = () => {
+const AnimeSearch = () => {
   const [genres, setGenres] = useState<TGenre[]>([]);
   const [explicitGenres, setExplicitGenres] = useState<TGenre[]>([]);
   const [themes, setThemes] = useState<TGenre[]>([]);
@@ -20,10 +20,10 @@ const Anime = () => {
     const load = async () => {
       try {
         const response = await getApi("genres/anime", "");
-        setGenres(response.slice(0, 18));
-        setExplicitGenres(response.slice(18, 21));
-        setThemes(response.slice(21, 73));
-        setDemographics(response.slice(73, 78));
+        setGenres(response.data.slice(0, 18));
+        setExplicitGenres(response.data.slice(18, 21));
+        setThemes(response.data.slice(21, 73));
+        setDemographics(response.data.slice(73, 78));
       } catch (error) {
         console.error(error);
       }
@@ -38,7 +38,7 @@ const Anime = () => {
       {/* Genres */}
       <section className="my-10">
         <h3 className="my-5">Genres</h3>
-        <div className="grid grid-cols-2 gap-5  lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-5">
           {genres.length > 0 &&
             genres.map((item) => (
               <Link to={""}>
@@ -56,7 +56,7 @@ const Anime = () => {
       {/* Explicit Genres */}
       <section className="my-10">
         <h3 className="my-5">Explicit Genres</h3>
-        <div className="grid grid-cols-2 gap-5 lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-5">
           {explicitGenres.length > 0 &&
             explicitGenres.map((item) => (
               <Link to={""}>
@@ -74,7 +74,7 @@ const Anime = () => {
       {/* Themes */}
       <section className="my-10">
         <h3 className="my-5">Themes</h3>
-        <div className="grid grid-cols-2 gap-5  lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-5">
           {themes.length > 0 &&
             themes.map((item) => (
               <Link to={""}>
@@ -92,7 +92,7 @@ const Anime = () => {
       {/* Demographics */}
       <section className="my-10">
         <h3 className="my-5">Demographics</h3>
-        <div className="grid grid-cols-2 gap-5  lg:grid-cols-5">
+        <div className="grid grid-cols-2 gap-5 md:grid-cols-3 xl:grid-cols-5">
           {demographics.length > 0 &&
             demographics.map((item) => (
               <Link to={""}>
@@ -110,4 +110,4 @@ const Anime = () => {
   );
 };
 
-export default Anime;
+export default AnimeSearch;

@@ -1,10 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Bot, Command, LifeBuoy, Send, SquareTerminal } from "lucide-react";
+import { Bot, Command, SquareTerminal } from "lucide-react";
 
 import { NavMain } from "@/components/nav-main";
-import { NavSecondary } from "@/components/nav-secondary";
 import {
   Sidebar,
   SidebarContent,
@@ -24,11 +23,11 @@ const data = {
       items: [
         {
           title: "Anime Search",
-          url: "#"
+          url: "/anime-search"
         },
         {
           title: "Top Anime",
-          url: "#"
+          url: "/top/anime"
         },
         {
           title: "Seasonal Anime",
@@ -50,18 +49,6 @@ const data = {
           url: "#"
         }
       ]
-    }
-  ],
-  navSecondary: [
-    {
-      title: "Support",
-      url: "#",
-      icon: LifeBuoy
-    },
-    {
-      title: "Feedback",
-      url: "#",
-      icon: Send
     }
   ]
 };
@@ -88,7 +75,6 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       </SidebarHeader>
       <SidebarContent>
         <NavMain items={data.navMain} />
-        <NavSecondary items={data.navSecondary} className="mt-auto" />
       </SidebarContent>
     </Sidebar>
   );

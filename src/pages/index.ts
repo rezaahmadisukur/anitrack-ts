@@ -1,4 +1,5 @@
 import HomePage from "./home";
-import Anime from "./anime/anime";
+import AnimeSearch from "./anime/anime-search";
+import TopAnime from "./anime/top-anime";
 
-export { HomePage, Anime };
+export { HomePage, AnimeSearch, TopAnime };

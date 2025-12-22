@@ -5,7 +5,7 @@ export const getApi = async (resource: string, query: string) => {
   try {
     const response = await axios
       .get(`${VITE_JIKAN_REST_API}/${resource}?${query}`)
-      .then((res) => res.data.data)
+      .then((res) => res.data)
       .catch((err) => console.error(err));
     return response;
   } catch (error) {
