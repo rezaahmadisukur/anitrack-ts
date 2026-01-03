@@ -17,7 +17,7 @@ const data = {
   navMain: [
     {
       title: "Anime",
-      url: "#",
+      url: "/",
       icon: SquareTerminal,
       isActive: true,
       items: [

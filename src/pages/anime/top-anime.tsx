@@ -1,33 +1,92 @@
 import AppLayout from "@/components/layout/app-layout";
-import { PaginationDemo } from "@/components/pagination-demo";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
-import { Context } from "@/contexts/Contexts";
-import { getApi } from "@/service/api";
+import { VITE_JIKAN_REST_API } from "@/service/env";
 import { type IAnime } from "@/types";
+import axios from "axios";
 import { Hash, Plus, Star } from "lucide-react";
-import { useContext, useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { useCallback, useEffect, useState } from "react";
+import { Link, useSearchParams } from "react-router-dom";
 
 const TopAnime = () => {
   const [data, setData] = useState<IAnime[]>([]);
-  const [pagination, setPagination] = useState();
-  const { page } = useContext(Context);
+  const [totalData, setTotalData] = useState<number>(0);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const currentPage = Number(searchParams.get("page")) || 1;
+  const ITEM_PER_PAGE = 25;
+
+  useEffect(() => {
+    if (!searchParams.has("page") as boolean) {
+      const params = new URLSearchParams(searchParams);
+      params.set("page", "1");
+      setSearchParams(params, { replace: true });
+    }
+  }, [searchParams, setSearchParams]);
+
+  // Fetch Data
+  const fetchData = useCallback(async () => {
+    try {
+      const response = await axios.get(`${VITE_JIKAN_REST_API}/top/anime`, {
+        params: {
+          page: currentPage
+        }
+      });
+      setData(response.data.data);
+      setTotalData(response.data.pagination.items.total);
+    } catch (error) {
+      console.error(error);
+    }
+  }, [currentPage]);
 
   useEffect(() => {
     const load = async () => {
-      try {
-        const response = await getApi(`top/anime`, `page=${page}`);
-        setData(response.data);
-        setPagination(response.pagination);
-      } catch (error) {
-        console.error(error);
-      }
+      await fetchData();
     };
     load();
-  }, [page]);
+  }, [fetchData]);
 
-  console.log(data);
+  // Handle Change Page
+  const handleChangePage = (page: number) => {
+    const params = new URLSearchParams(searchParams);
+    params.set("page", page.toString());
+    setSearchParams(params);
+
+    // after move page go to top page
+    window.scrollTo({ top: 0, behavior: "instant" });
+  };
+
+  const generatePagination = (currentPage: number, totalPage: number) => {
+    if (totalData <= 7) {
+      return Array.from({ length: totalPage }, (_, i) => i + 1);
+    }
+
+    if (currentPage <= 4) {
+      return [1, 2, 3, 4, 5, "...", totalPage];
+    }
+
+    if (currentPage >= totalPage - 3) {
+      return [
+        1,
+        "...",
+        totalPage - 4,
+        totalPage - 3,
+        totalPage - 2,
+        totalPage - 1,
+        totalPage
+      ];
+    }
+
+    return [
+      1,
+      "...",
+      currentPage - 1,
+      currentPage,
+      currentPage + 1,
+      "...",
+      totalPage
+    ];
+  };
 
   return (
     <AppLayout>
@@ -109,7 +168,69 @@ const TopAnime = () => {
 
       {/* Pagination */}
       <div className="py-10">
-        <PaginationDemo pagination={pagination} />
+        <div className="flex justify-center items-center gap-3 flex-wrap">
+          <Button
+            disabled={currentPage <= 1}
+            onClick={() => {
+              handleChangePage(currentPage - 1);
+            }}
+            className="cursor-pointer"
+          >
+            Prev
+          </Button>
+
+          {generatePagination(
+            currentPage,
+            Math.ceil(totalData / ITEM_PER_PAGE)
+          ).map((page, index) => {
+            if (page === "...") {
+              return (
+                <span
+                  key={`ellipsis-${index}`}
+                  className="px-2 text-muted-foreground"
+                >
+                  ...
+                </span>
+              );
+            }
+
+            return (
+              <Button
+                key={index}
+                variant={currentPage === page ? "default" : "outline"}
+                onClick={() => {
+                  handleChangePage(Number(page));
+                }}
+              >
+                {page}
+              </Button>
+            );
+          })}
+
+          {/* {new Array(Math.ceil(totalData / ITEM_PER_PAGE))
+            .fill(1)
+            .map((_, index) => {
+              return (
+                <Button
+                  variant={currentPage === index + 1 ? "default" : "outline"}
+                  onClick={() => {
+                    handleChangePage(index + 1);
+                  }}
+                >
+                  {index + 1}
+                </Button>
+              );
+            })} */}
+
+          <Button
+            onClick={() => {
+              handleChangePage(currentPage + 1);
+            }}
+            className="cursor-pointer"
+          >
+            Next
+          </Button>
+        </div>
       </div>
     </AppLayout>
   );
